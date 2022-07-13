@@ -33,10 +33,10 @@
 
 
 
-
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
+const body = document.querySelector("body");
 const listGallery = document.querySelector(".gallery");
 
 const createList = (galleryItems) => 
@@ -50,7 +50,7 @@ const createList = (galleryItems) =>
                 alt="${image.description}"
                 />
             </a>
-            </div>`, "");
+        </div>`, "");
 
 listGallery.insertAdjacentHTML("beforeend" , createList(galleryItems));
 
@@ -65,14 +65,25 @@ function onClick(evt) {
     }
 
     const instance = basicLightbox.create(`<img src="${evt.target.dataset.source}"/>`);
-    instance.show();
-    window.addEventListener("keydown", onEscKeyPress)
+    instance.show(() => body.style.overflow = "hidden");
 
+    window.addEventListener("keydown", onEscKeyPress);
+   
     function onEscKeyPress(evt) {
-
         if (evt.code === "Escape") {
             instance.close();
             window.removeEventListener("keydown", onEscKeyPress);
+
+            body.style.overflow = "auto";
+        }
+    }
+
+    // идея в том что бы запретить прокручивание страници про открытой модалке
+    window.addEventListener("click", hiddenScroll);
+
+    function hiddenScroll(evt) {
+        if (body.style.overflow === "hidden"){
+            body.style.overflow = "auto";
         }
     }
 }
